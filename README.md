@@ -97,10 +97,8 @@ Exact dependency versions are listed in `requirements.txt`.
 
 ### 1. Clone the repository
 
-Replace `YOUR_GITHUB_USERNAME` with the repository owner's username.
-
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/campus-notify.git
+git clone https://github.com/shreyansh-cry/campus-notify.git
 cd campus-notify
 ```
 
