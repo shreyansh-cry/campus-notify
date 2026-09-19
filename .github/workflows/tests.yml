@@ -26,7 +26,7 @@ jobs:
         
     - name: Run tests with pytest
       run: |
-        pytest -v
+        python -m pytest -v
       env:
         FLASK_CONFIG: testing
         # Secrets aren't needed for tests since they use SQLite and demo messaging,
