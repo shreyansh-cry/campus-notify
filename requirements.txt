@@ -1,0 +1,26 @@
+# Web framework
+Flask==3.1.3
+Flask-Limiter==4.1.1
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-WTF==1.2.2
+
+# Database
+PyMySQL==1.1.1
+cryptography==50.0.1
+
+# Twilio SDK
+twilio==9.4.5
+
+# Password hashing (included with Werkzeug via Flask, listed for clarity)
+# werkzeug>=3.0
+
+# Timezone handling
+pytz==2024.2
+
+# Environment variables
+python-dotenv==1.2.2
+
+# Testing
+pytest==9.0.3
+pytest-cov==6.0.0

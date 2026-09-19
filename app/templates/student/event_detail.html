@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }} — CampusNotify{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Back link & Organizer banner -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <a href="{{ url_for('student.events') }}" class="text-decoration-none text-muted">
+                <i class="bi bi-arrow-left me-1"></i>Back to all events
+            </a>
+            {% if current_user.is_authenticated %}
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-2 px-3">
+                    <i class="bi bi-shield-lock me-1"></i>Organizer Preview Mode &mdash;
+                    <a href="{{ url_for('organizer.event_detail', event_id=event.id) }}" class="text-primary fw-bold text-decoration-underline ms-1">
+                        Go to Event Admin
+                    </a>
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- Event details card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                {% if event.is_cancelled %}
+                    <div class="alert alert-danger mb-3">
+                        <i class="bi bi-x-circle me-1"></i>This event has been cancelled.
+                    </div>
+                {% endif %}
+
+                <span class="badge bg-primary-subtle text-primary mb-2">
+                    <i class="bi bi-people me-1"></i>{{ event.club_name }}
+                </span>
+
+                <h2 class="fw-bold mb-3">{{ event.title }}</h2>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center text-muted">
+                            <i class="bi bi-calendar3 me-2 text-primary"></i>
+                            <span>{{ event.event_date.strftime('%A, %d %b %Y') }}</span>
+                        </div>
+                    </div>
+                    {% if event.event_time %}
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center text-muted">
+                            <i class="bi bi-clock me-2 text-primary"></i>
+                            <span>{{ event.event_time.strftime('%I:%M %p') }} IST</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if event.location %}
+                    <div class="col-sm-12">
+                        <div class="d-flex align-items-center text-muted">
+                            <i class="bi bi-geo-alt me-2 text-primary"></i>
+                            <span>{{ event.location }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if event.description %}
+                    <div class="border-top pt-3">
+                        <p class="mb-0" style="white-space: pre-line;">{{ event.description }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Subscribe form (only for upcoming, non-cancelled events) -->
+        {% if not event.is_cancelled and event.is_upcoming %}
+            <div class="card border-0 shadow-sm" id="subscribe">
+                <div class="card-body p-4">
+                    <h4 class="fw-semibold mb-3">
+                        <i class="bi bi-bell text-primary me-2"></i>Get an SMS Reminder
+                    </h4>
+                    <p class="text-muted small mb-4">
+                        Enter your details below and we'll send you a reminder before the event.
+                    </p>
+
+                    <form action="{{ url_for('student.subscribe', event_id=event.id) }}" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="mb-3">
+                            <label for="student_name" class="form-label fw-medium">Your Name</label>
+                            <input type="text" class="form-control" id="student_name" name="student_name"
+                                   placeholder="e.g. Ananya Sharma"
+                                   value="{{ form_name|default('', true) }}"
+                                   required minlength="2" maxlength="100"
+                                   aria-describedby="nameHelp">
+                            <div id="nameHelp" class="form-text">2-100 characters</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label fw-medium">Phone Number (with country code)</label>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                                   placeholder="e.g. +919876543210"
+                                   value="{{ form_phone|default('', true) }}"
+                                   required pattern="^\+\d{10,15}$"
+                                   aria-describedby="phoneHelp">
+                            <div id="phoneHelp" class="form-text">
+                                Start with + followed by country code and number (e.g. +91 for India)
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="consent" name="consent"
+                                       aria-describedby="consentHelp">
+                                <label class="form-check-label" for="consent">
+                                    I agree to receive SMS reminders for this event. Standard messaging rates may apply.
+                                </label>
+                                <div id="consentHelp" class="form-text">
+                                    You can unsubscribe at any time using the link we'll provide.
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="subscribeBtn">
+                            <i class="bi bi-bell me-1"></i>Subscribe for Reminder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% elif not event.is_cancelled %}
+            <div class="alert alert-secondary text-center">
+                <i class="bi bi-clock-history me-1"></i>This event has already passed.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

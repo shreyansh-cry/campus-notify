@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Upcoming Events — CampusNotify{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <div class="d-inline-flex align-items-center gap-2 mb-2">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill">
+            <i class="bi bi-mortarboard me-1"></i>Student Notification Portal
+        </span>
+    </div>
+    <h1 class="display-6 fw-bold text-primary">
+        <i class="bi bi-calendar-event me-2"></i>Upcoming Campus Events
+    </h1>
+    <p class="text-muted lead mb-1">Subscribe to get SMS reminders for events you care about.</p>
+    <p class="text-muted small">
+        <i class="bi bi-shield-check text-success me-1"></i>Free SMS notifications. No spam. One-tap unsubscribe anytime.
+    </p>
+</div>
+
+{% if events %}
+    <div class="row g-4">
+        {% for event in events %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card event-card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Club badge -->
+                        <span class="badge bg-primary-subtle text-primary mb-2 align-self-start">
+                            <i class="bi bi-people me-1"></i>{{ event.club_name }}
+                        </span>
+
+                        <h5 class="card-title fw-semibold">{{ event.title }}</h5>
+
+                        <div class="event-meta text-muted small mb-3">
+                            <div class="mb-1">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ event.event_date.strftime('%A, %d %b %Y') }}
+                            </div>
+                            {% if event.event_time %}
+                                <div class="mb-1">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ event.event_time.strftime('%I:%M %p') }} IST
+                                </div>
+                            {% endif %}
+                            {% if event.location %}
+                                <div>
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    {{ event.location }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if event.description %}
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ event.description[:120] }}{% if event.description|length > 120 %}…{% endif %}
+                            </p>
+                        {% endif %}
+
+                        <a href="{{ url_for('student.event_detail', event_id=event.id) }}"
+                           class="btn btn-primary btn-sm mt-auto">
+                            View & Subscribe <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- Empty state -->
+    <div class="text-center py-5">
+        <i class="bi bi-calendar-x display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">No upcoming events</h4>
+        <p class="text-muted">Check back later — new events are added regularly!</p>
+    </div>
+{% endif %}
+{% endblock %}
